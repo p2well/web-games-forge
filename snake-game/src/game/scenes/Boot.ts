@@ -53,11 +53,17 @@ export class Boot extends Scene {
             color: '#ff0055'
         }).setOrigin(0.5);
 
+        this.add.text(512, 520, 'P OR ESC TO PAUSE', {
+            fontSize: '40px',
+            fontFamily: 'Pixeltype',
+            color: '#ffffff'
+        }).setOrigin(0.5);
+
         // Separator line
         gfx.lineStyle(1, 0x00ccff, 0.4);
-        gfx.lineBetween(160, 520, 864, 520);
+        gfx.lineBetween(160, 580, 864, 580);
 
-        const startText = this.add.text(512, 600, 'PRESS SPACE OR ENTER', {
+        const startText = this.add.text(512, 650, 'PRESS SPACE OR ENTER', {
             fontSize: '56px',
             fontFamily: 'Pixeltype',
             color: '#ffff00'
