@@ -17,30 +17,30 @@ export class GameOver extends Scene {
     }
 
     create() {
-        this.add.text(320, 100, 'GAME OVER', {
-            fontSize: '52px',
-            fontFamily: 'monospace',
+        this.add.text(320, 80, 'GAME OVER', {
+            fontSize: '96px',
+            fontFamily: 'Pixeltype',
             color: '#ff5555',
             fontStyle: 'bold'
         }).setOrigin(0.5);
 
-        this.add.text(320, 200, `Score: ${this.finalScore}`, {
-            fontSize: '32px',
-            fontFamily: 'monospace',
+        this.add.text(320, 195, `Score: ${this.finalScore}`, {
+            fontSize: '56px',
+            fontFamily: 'Pixeltype',
             color: '#f8f8f2'
         }).setOrigin(0.5);
 
         const highScoreColor = this.isNewHighScore ? '#f1fa8c' : '#ffb86c';
-        this.add.text(320, 250, `Best: ${this.highScore}`, {
-            fontSize: '24px',
-            fontFamily: 'monospace',
+        this.add.text(320, 255, `Best: ${this.highScore}`, {
+            fontSize: '44px',
+            fontFamily: 'Pixeltype',
             color: highScoreColor
         }).setOrigin(0.5);
 
         if (this.isNewHighScore) {
-            const newRecord = this.add.text(320, 295, '★ NEW RECORD! ★', {
-                fontSize: '24px',
-                fontFamily: 'monospace',
+            const newRecord = this.add.text(320, 305, '★ NEW RECORD! ★', {
+                fontSize: '44px',
+                fontFamily: 'Pixeltype',
                 color: '#f1fa8c',
                 fontStyle: 'bold'
             }).setOrigin(0.5);
@@ -57,8 +57,8 @@ export class GameOver extends Scene {
         }
 
         const restartText = this.add.text(320, 380, 'Press SPACE or ENTER to Play Again', {
-            fontSize: '20px',
-            fontFamily: 'monospace',
+            fontSize: '36px',
+            fontFamily: 'Pixeltype',
             color: '#50fa7b'
         }).setOrigin(0.5);
 
@@ -72,8 +72,8 @@ export class GameOver extends Scene {
         });
 
         this.add.text(320, 430, 'Press ESC for Menu', {
-            fontSize: '16px',
-            fontFamily: 'monospace',
+            fontSize: '28px',
+            fontFamily: 'Pixeltype',
             color: '#6272a4'
         }).setOrigin(0.5);
 

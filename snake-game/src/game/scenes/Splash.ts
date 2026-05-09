@@ -1,22 +1,27 @@
 import { Scene } from 'phaser';
 
+const FONT_FAMILY = 'Pixeltype';
+
 export class Splash extends Scene {
 
     constructor() {
         super('Splash');
     }
 
-    create() {
+    async create() {
+        // Ensure font is loaded before rendering any text
+        await document.fonts.load(`16px ${FONT_FAMILY}`);
+
         this.add.text(320, 180, '🐍 SNAKE', {
-            fontSize: '72px',
-            fontFamily: 'monospace',
+            fontSize: '128px',
+            fontFamily: FONT_FAMILY,
             color: '#50fa7b',
             fontStyle: 'bold'
         }).setOrigin(0.5);
 
         const prompt = this.add.text(320, 320, 'Click to play', {
-            fontSize: '24px',
-            fontFamily: 'monospace',
+            fontSize: '44px',
+            fontFamily: FONT_FAMILY,
             color: '#ffb86c'
         }).setOrigin(0.5);
 
