@@ -13,9 +13,9 @@ interface GridPosition {
 
 const GRID_SIZE = 20;
 const GRID_WIDTH = 30;
-const GRID_HEIGHT = 22;
+const GRID_HEIGHT = 21;
 const OFFSET_X = 20;
-const OFFSET_Y = 40;
+const OFFSET_Y = 60;
 
 const DIRECTION: Record<string, Direction> = {
     UP: { x: 0, y: -1 },
@@ -206,8 +206,8 @@ export class Game extends Scene {
 
     private createUI(): void {
         this.scoreText = this.add.text(OFFSET_X, 10, `Score: ${this.score}`, {
-            fontSize: '20px',
-            fontFamily: 'monospace',
+            fontSize: '48px',
+            fontFamily: 'Pixeltype',
             color: '#f8f8f2'
         });
 
@@ -216,8 +216,8 @@ export class Game extends Scene {
             10,
             `Best: ${this.highScore}`,
             {
-                fontSize: '20px',
-                fontFamily: 'monospace',
+                fontSize: '48px',
+                fontFamily: 'Pixeltype',
                 color: '#ffb86c'
             }
         ).setOrigin(1, 0);
@@ -249,8 +249,8 @@ export class Game extends Scene {
             if (this.pauseText) this.pauseText.destroy();
         } else {
             this.pauseText = this.add.text(320, 240, 'PAUSED', {
-                fontSize: '48px',
-                fontFamily: 'monospace',
+                fontSize: '96px',
+                fontFamily: 'Pixeltype',
                 color: '#f1fa8c',
                 fontStyle: 'bold'
             }).setOrigin(0.5).setDepth(100);
