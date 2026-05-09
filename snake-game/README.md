@@ -1,12 +1,12 @@
 # 🐍 Snake Game
 
-A classic Snake game built with **Phaser 4** and bundled with **Vite**. No external assets — all visuals and audio are generated procedurally at runtime.
+A classic Snake game built with **Phaser 4**, **TypeScript**, and **Vite**. No external assets — all visuals and audio are generated procedurally at runtime.
 
 ## Quick Start
 
 ```bash
 npm install
-npm run dev        # opens http://localhost:3000
+npm run dev        # starts http://localhost:8080
 ```
 
 Build for production:
@@ -31,42 +31,39 @@ High scores are saved in `localStorage`.
 
 ## Project Structure
 
-```
-snake-game/
-├── index.html           # Entry point — hosts the game container
-├── vite.config.js       # Vite dev server & build config
-├── package.json
-└── src/
-    ├── main.js          # Phaser game config & scene registration
-    ├── SoundFX.js       # Procedural retro sound effects (eat, move, game over)
-    ├── TitleMusic.js     # Procedural chiptune melody for the title screen
-    └── scenes/
-        ├── SplashScene.js    # Initial click-to-start screen (unlocks audio)
-        ├── BootScene.js      # Title screen with instructions & music
-        ├── GameScene.js      # Core gameplay loop
-        └── GameOverScene.js  # Score display & restart options
-```
+| Path                         | Description                                         |
+|------------------------------|-----------------------------------------------------|
+| `index.html`                 | HTML entry point                                    |
+| `public/style.css`           | Global layout styles                                |
+| `public/assets/`             | Static game assets (none — all procedural)          |
+| `src/main.ts`                | Application bootstrap                               |
+| `src/game/main.ts`           | Game entry point: configures and starts the game    |
+| `src/game/SoundFX.ts`        | Procedural retro sound effects (eat, move, game over) |
+| `src/game/TitleMusic.ts`     | Procedural chiptune melody for the title screen     |
+| `src/game/scenes/`           | Phaser game scenes                                  |
+| `vite/config.dev.mjs`        | Vite config for development                         |
+| `vite/config.prod.mjs`       | Vite config for production (terser + chunk split)   |
 
 ## Scene Flow
 
 ```
-SplashScene ──click──▸ BootScene ──SPACE/ENTER──▸ GameScene
-                           ▲                          │
-                           │ ESC                      │ collision
-                           │                          ▼
-                           └──────────────── GameOverScene
-                                                SPACE/ENTER ──▸ GameScene
+Splash ──click──▸ Boot ──SPACE/ENTER──▸ Game
+                    ▲                      │
+                    │ ESC                  │ collision
+                    │                      ▼
+                    └──────────────── GameOver
+                                      SPACE/ENTER ──▸ Game
 ```
 
-### SplashScene
+### Splash
 
 Displays the game title and a "Click to play" prompt. The click event is required to unlock the browser's `AudioContext` — after that, procedural audio works seamlessly.
 
-### BootScene
+### Boot
 
 Shows the title, control instructions, and a blinking "Press SPACE or ENTER to Start" prompt. Starts the `TitleMusic` chiptune loop, which stops when gameplay begins.
 
-### GameScene
+### Game
 
 The main gameplay scene. Key concepts:
 
@@ -77,7 +74,7 @@ The main gameplay scene. Key concepts:
 - **Collision detection** — the game ends if the head moves outside the grid or overlaps any body segment.
 - **Drawing** — the snake and food are drawn with the Phaser `Graphics` API. The head has eyes that follow the current direction, and body segments fade with a gradient.
 
-### GameOverScene
+### GameOver
 
 Displays the final score and the all-time best. If a new record was set, a pulsing "★ NEW RECORD! ★" label appears. The player can restart immediately or return to the title screen.
 
@@ -94,10 +91,12 @@ Both classes respect Phaser's global mute and volume settings.
 
 ## Tech Stack
 
-| Tool      | Version | Role                |
-|-----------|---------|---------------------|
-| Phaser    | 4.1+    | Game framework      |
-| Vite      | 6.x     | Dev server & bundler|
+| Tool       | Version | Role                 |
+|------------|---------|----------------------|
+| Phaser     | 4.1+    | Game framework       |
+| TypeScript | 5.7     | Type-safe source     |
+| Vite       | 6.x     | Dev server & bundler |
+| Terser     | 5.x     | Production minifier  |
 
 ## License
 

@@ -1,13 +1,15 @@
-import Phaser from 'phaser';
-import { TitleMusic } from '../TitleMusic.js';
+import { Scene } from 'phaser';
+import { TitleMusic } from '../TitleMusic';
 
-export class BootScene extends Phaser.Scene {
+export class Boot extends Scene {
+
+    private music!: TitleMusic;
+
     constructor() {
-        super('BootScene');
+        super('Boot');
     }
 
     create() {
-        // Title
         this.add.text(320, 120, '🐍 SNAKE', {
             fontSize: '64px',
             fontFamily: 'monospace',
@@ -15,7 +17,6 @@ export class BootScene extends Phaser.Scene {
             fontStyle: 'bold'
         }).setOrigin(0.5);
 
-        // Instructions
         this.add.text(320, 220, 'Use Arrow Keys to Move', {
             fontSize: '20px',
             fontFamily: 'monospace',
@@ -34,16 +35,14 @@ export class BootScene extends Phaser.Scene {
             color: '#bd93f9'
         }).setOrigin(0.5);
 
-        // Start prompt
-        this.startText = this.add.text(320, 400, 'Press SPACE or ENTER to Start', {
+        const startText = this.add.text(320, 400, 'Press SPACE or ENTER to Start', {
             fontSize: '22px',
             fontFamily: 'monospace',
             color: '#ffb86c'
         }).setOrigin(0.5);
 
-        // Blink effect
         this.tweens.add({
-            targets: this.startText,
+            targets: startText,
             alpha: 0.3,
             duration: 800,
             ease: 'Sine.easeInOut',
@@ -51,17 +50,15 @@ export class BootScene extends Phaser.Scene {
             loop: -1
         });
 
-        // Audio is already unlocked by SplashScene's click
         this.music = new TitleMusic(this);
         this.music.start();
 
-        // Listen for game start
-        this.input.keyboard.on('keydown-SPACE', this.startGame, this);
-        this.input.keyboard.on('keydown-ENTER', this.startGame, this);
+        this.input.keyboard!.on('keydown-SPACE', this.startGame, this);
+        this.input.keyboard!.on('keydown-ENTER', this.startGame, this);
     }
 
-    startGame() {
+    private startGame(): void {
         this.music.stop();
-        this.scene.start('GameScene');
+        this.scene.start('Game');
     }
 }

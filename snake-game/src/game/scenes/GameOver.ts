@@ -1,18 +1,22 @@
-import Phaser from 'phaser';
+import { Scene } from 'phaser';
 
-export class GameOverScene extends Phaser.Scene {
+export class GameOver extends Scene {
+
+    private finalScore = 0;
+    private highScore = 0;
+    private isNewHighScore = false;
+
     constructor() {
-        super('GameOverScene');
+        super('GameOver');
     }
 
-    init(data) {
+    init(data: { score: number; highScore: number }) {
         this.finalScore = data.score || 0;
         this.highScore = data.highScore || 0;
         this.isNewHighScore = this.finalScore >= this.highScore && this.finalScore > 0;
     }
 
     create() {
-        // Game Over title
         this.add.text(320, 100, 'GAME OVER', {
             fontSize: '52px',
             fontFamily: 'monospace',
@@ -20,14 +24,12 @@ export class GameOverScene extends Phaser.Scene {
             fontStyle: 'bold'
         }).setOrigin(0.5);
 
-        // Score
         this.add.text(320, 200, `Score: ${this.finalScore}`, {
             fontSize: '32px',
             fontFamily: 'monospace',
             color: '#f8f8f2'
         }).setOrigin(0.5);
 
-        // High score
         const highScoreColor = this.isNewHighScore ? '#f1fa8c' : '#ffb86c';
         this.add.text(320, 250, `Best: ${this.highScore}`, {
             fontSize: '24px',
@@ -35,7 +37,6 @@ export class GameOverScene extends Phaser.Scene {
             color: highScoreColor
         }).setOrigin(0.5);
 
-        // New high score indicator
         if (this.isNewHighScore) {
             const newRecord = this.add.text(320, 295, '★ NEW RECORD! ★', {
                 fontSize: '24px',
@@ -55,7 +56,6 @@ export class GameOverScene extends Phaser.Scene {
             });
         }
 
-        // Restart prompt
         const restartText = this.add.text(320, 380, 'Press SPACE or ENTER to Play Again', {
             fontSize: '20px',
             fontFamily: 'monospace',
@@ -71,22 +71,20 @@ export class GameOverScene extends Phaser.Scene {
             ease: 'Sine.easeInOut'
         });
 
-        // Menu prompt
         this.add.text(320, 430, 'Press ESC for Menu', {
             fontSize: '16px',
             fontFamily: 'monospace',
             color: '#6272a4'
         }).setOrigin(0.5);
 
-        // Input handlers
-        this.input.keyboard.on('keydown-SPACE', () => {
-            this.scene.start('GameScene');
+        this.input.keyboard!.on('keydown-SPACE', () => {
+            this.scene.start('Game');
         });
-        this.input.keyboard.on('keydown-ENTER', () => {
-            this.scene.start('GameScene');
+        this.input.keyboard!.on('keydown-ENTER', () => {
+            this.scene.start('Game');
         });
-        this.input.keyboard.on('keydown-ESC', () => {
-            this.scene.start('BootScene');
+        this.input.keyboard!.on('keydown-ESC', () => {
+            this.scene.start('Boot');
         });
     }
 }

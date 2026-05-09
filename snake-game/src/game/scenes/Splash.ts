@@ -1,8 +1,9 @@
-import Phaser from 'phaser';
+import { Scene } from 'phaser';
 
-export class SplashScene extends Phaser.Scene {
+export class Splash extends Scene {
+
     constructor() {
-        super('SplashScene');
+        super('Splash');
     }
 
     create() {
@@ -29,7 +30,7 @@ export class SplashScene extends Phaser.Scene {
         });
 
         this.input.once('pointerdown', () => {
-            this.scene.start('BootScene');
+            this.scene.start('Boot');
         });
     }
 }
