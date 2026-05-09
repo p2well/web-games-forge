@@ -1,0 +1,19 @@
+{
+  "name": "ninja-demo",
+  "version": "1.0.0",
+  "description": "Demo scene for the shared ninja sprite asset",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": ["phaser", "ninja", "asset-demo"],
+  "license": "MIT",
+  "dependencies": {
+    "phaser": "^4.1.0"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}
