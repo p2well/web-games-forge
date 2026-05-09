@@ -53,6 +53,7 @@ export class Game extends Scene {
         right: Phaser.Input.Keyboard.Key;
     };
     private pauseText: Phaser.GameObjects.Text | null = null;
+    private pauseKeyHandler: ((event: KeyboardEvent) => void) | null = null;
 
     constructor() {
         super('Game');
@@ -248,11 +249,19 @@ export class Game extends Scene {
             right: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D)
         };
 
-        this.input.keyboard!.on('keydown-P', () => {
-            this.togglePause();
-        });
-        this.input.keyboard!.on('keydown-ESC', () => {
-            this.togglePause();
+        // Use a DOM listener so pause/unpause works even while the scene is paused
+        this.pauseKeyHandler = (event: KeyboardEvent) => {
+            if (event.code === 'KeyP' || event.code === 'Escape') {
+                this.togglePause();
+            }
+        };
+        window.addEventListener('keydown', this.pauseKeyHandler);
+
+        this.events.on('shutdown', () => {
+            if (this.pauseKeyHandler) {
+                window.removeEventListener('keydown', this.pauseKeyHandler);
+                this.pauseKeyHandler = null;
+            }
         });
     }
 
