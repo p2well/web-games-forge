@@ -45,7 +45,7 @@ export class Splash extends Scene {
             loop: -1
         });
 
-        this.add.text(512, 710, '\u00A9 2026 WEB GAMES FORGE', {
+        this.add.text(512, 710, '(C) 2026 WEB GAMES FORGE', {
             fontSize: '28px',
             fontFamily: FONT_FAMILY,
             color: '#00ff00'
