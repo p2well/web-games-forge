@@ -6,10 +6,10 @@ import { AUTO, Game, Scale } from 'phaser';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
-    width: 640,
-    height: 480,
+    width: 1024,
+    height: 768,
     parent: 'game-container',
-    backgroundColor: '#1e1e2e',
+    backgroundColor: '#000000',
     scene: [
         Splash,
         Boot,

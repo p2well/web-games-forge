@@ -10,41 +10,63 @@ export class Boot extends Scene {
     }
 
     create() {
-        this.add.text(320, 100, '🐍 SNAKE', {
-            fontSize: '120px',
+        const gfx = this.add.graphics();
+
+        // Decorative border frame
+        gfx.lineStyle(2, 0x00ff00, 0.5);
+        gfx.strokeRect(50, 50, 924, 668);
+        gfx.lineStyle(1, 0x00ff00, 0.2);
+        gfx.strokeRect(56, 56, 912, 656);
+
+        this.add.text(512, 130, 'SNAKE', {
+            fontSize: '140px',
             fontFamily: 'Pixeltype',
-            color: '#50fa7b',
+            color: '#00ff00',
             fontStyle: 'bold'
         }).setOrigin(0.5);
 
-        this.add.text(320, 220, 'Use Arrow Keys to Move', {
-            fontSize: '36px',
+        // Separator line
+        gfx.lineStyle(1, 0x00ccff, 0.4);
+        gfx.lineBetween(160, 200, 864, 200);
+
+        this.add.text(512, 270, 'HOW TO PLAY', {
+            fontSize: '52px',
             fontFamily: 'Pixeltype',
-            color: '#f8f8f2'
+            color: '#ffff00'
         }).setOrigin(0.5);
 
-        this.add.text(320, 265, 'Eat food to grow', {
-            fontSize: '32px',
-            fontFamily: 'Pixeltype',
-            color: '#bd93f9'
-        }).setOrigin(0.5);
-
-        this.add.text(320, 305, 'Avoid walls and yourself', {
-            fontSize: '32px',
-            fontFamily: 'Pixeltype',
-            color: '#bd93f9'
-        }).setOrigin(0.5);
-
-        const startText = this.add.text(320, 400, 'Press SPACE or ENTER to Start', {
+        this.add.text(512, 340, 'ARROW KEYS OR WASD TO MOVE', {
             fontSize: '40px',
             fontFamily: 'Pixeltype',
-            color: '#ffb86c'
+            color: '#ffffff'
+        }).setOrigin(0.5);
+
+        this.add.text(512, 400, 'EAT FOOD TO GROW + SCORE', {
+            fontSize: '40px',
+            fontFamily: 'Pixeltype',
+            color: '#00ccff'
+        }).setOrigin(0.5);
+
+        this.add.text(512, 460, 'AVOID WALLS AND YOURSELF!', {
+            fontSize: '40px',
+            fontFamily: 'Pixeltype',
+            color: '#ff0055'
+        }).setOrigin(0.5);
+
+        // Separator line
+        gfx.lineStyle(1, 0x00ccff, 0.4);
+        gfx.lineBetween(160, 520, 864, 520);
+
+        const startText = this.add.text(512, 600, 'PRESS SPACE OR ENTER', {
+            fontSize: '56px',
+            fontFamily: 'Pixeltype',
+            color: '#ffff00'
         }).setOrigin(0.5);
 
         this.tweens.add({
             targets: startText,
-            alpha: 0.3,
-            duration: 800,
+            alpha: 0.2,
+            duration: 600,
             ease: 'Sine.easeInOut',
             yoyo: true,
             loop: -1

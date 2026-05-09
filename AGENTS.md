@@ -57,6 +57,57 @@ Always create new games by copying the `_game-template/` directory:
 - Prefer generating vector textures via `Graphics.generateTexture()` for simple shapes over loading image assets
 - Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) (e.g., `feat:`, `fix:`, `docs:`)
 
+## Classic Arcade Style Guide
+
+When creating a game with a **classic arcade** aesthetic (80s gaming hall style), apply the following visual conventions consistently across all scenes.
+
+### Color Palette
+
+| Role            | Color     | Hex       |
+|-----------------|-----------|-----------|
+| Background      | Pure black| `#000000` |
+| Primary / Snake | Neon green| `#00ff00` |
+| Accent / Food   | Hot pink  | `#ff0055` |
+| Headings / CTA  | Yellow    | `#ffff00` |
+| Info text       | Cyan      | `#00ccff` |
+| Body text       | White     | `#ffffff` |
+| Danger / Death  | Red       | `#ff0000` |
+
+### Typography
+
+- Use the **Pixeltype** bitmap font (`public/assets/pixeltype.ttf`) for all in-game text
+- Load via `@font-face` in `public/style.css` and await `document.fonts.load()` in the first scene before rendering text
+- All text should be **UPPERCASE**
+- Score displays use **zero-padded** format: `SCORE  00130`, `HI  00450`
+
+### Rendering Style
+
+- **Sharp pixel blocks** — use `fillRect()` for all game objects, never `fillRoundedRect()` or `fillCircle()`
+- **1px gap** between grid cells for visual separation (e.g., `fillRect(x + 1, y + 1, size - 2, size - 2)`)
+- **Highlight pixels** — small bright squares on objects for a specular/shine effect
+- **Outer glow** — semi-transparent larger rect behind key objects (food, power-ups)
+- Playing field uses a **dot-grid** pattern (1px dots at grid intersections, ~10% opacity green)
+
+### CRT / Cabinet Effects (CSS)
+
+Apply these in `public/style.css` on `#game-container`:
+
+- **Neon green border** with box-shadow glow (`0 0 8px rgba(0,255,0,0.4)`)
+- **Scanline overlay** via `::after` pseudo-element with `repeating-linear-gradient` (2px transparent + 2px semi-black)
+- **Black page background** (`body { background-color: #000 }`)
+- No `border-radius` — sharp corners only
+
+### Scene Layout Conventions
+
+- **Decorative border frames** — thin green or red `strokeRect` around full-screen scenes (Splash, Boot, GameOver)
+- **Separator lines** — 1px horizontal lines between content sections (colored to match section theme)
+- **Blinking prompts** — CTA text (e.g., "PRESS SPACE OR ENTER") uses a tween with `alpha: 0.2`, `duration: 600`, `yoyo: true`, `loop: -1`
+- **Score bar** — top area above the playing field with `SCORE` left-aligned and `HI` right-aligned
+
+### Reference Implementation
+
+See `snake-game/` for a complete example of this style applied to all scenes (Splash, Boot, Game, GameOver).
+
 ## Verification
 
 Before considering a game complete, always:
