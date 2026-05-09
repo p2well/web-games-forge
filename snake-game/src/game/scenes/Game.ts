@@ -11,11 +11,11 @@ interface GridPosition {
     y: number;
 }
 
-const GRID_SIZE = 20;
-const GRID_WIDTH = 30;
-const GRID_HEIGHT = 21;
-const OFFSET_X = 20;
-const OFFSET_Y = 60;
+const GRID_SIZE = 24;
+const GRID_WIDTH = 40;
+const GRID_HEIGHT = 27;
+const OFFSET_X = 32;
+const OFFSET_Y = 80;
 
 const DIRECTION: Record<string, Direction> = {
     UP: { x: 0, y: -1 },
@@ -83,24 +83,24 @@ export class Game extends Scene {
     private createBoard(): void {
         const graphics = this.add.graphics();
 
-        graphics.fillStyle(0x282a36, 1);
+        // Playing field — pure black
+        graphics.fillStyle(0x000000, 1);
         graphics.fillRect(OFFSET_X, OFFSET_Y, GRID_WIDTH * GRID_SIZE, GRID_HEIGHT * GRID_SIZE);
 
-        graphics.lineStyle(2, 0x6272a4, 1);
+        // Bright arcade border
+        graphics.lineStyle(2, 0x00ff00, 1);
         graphics.strokeRect(OFFSET_X, OFFSET_Y, GRID_WIDTH * GRID_SIZE, GRID_HEIGHT * GRID_SIZE);
 
-        graphics.lineStyle(1, 0x44475a, 0.3);
+        // Faint inner dot-grid for retro feel
         for (let x = 0; x <= GRID_WIDTH; x++) {
-            graphics.lineBetween(
-                OFFSET_X + x * GRID_SIZE, OFFSET_Y,
-                OFFSET_X + x * GRID_SIZE, OFFSET_Y + GRID_HEIGHT * GRID_SIZE
-            );
-        }
-        for (let y = 0; y <= GRID_HEIGHT; y++) {
-            graphics.lineBetween(
-                OFFSET_X, OFFSET_Y + y * GRID_SIZE,
-                OFFSET_X + GRID_WIDTH * GRID_SIZE, OFFSET_Y + y * GRID_SIZE
-            );
+            for (let y = 0; y <= GRID_HEIGHT; y++) {
+                graphics.fillStyle(0x00ff00, 0.1);
+                graphics.fillRect(
+                    OFFSET_X + x * GRID_SIZE,
+                    OFFSET_Y + y * GRID_SIZE,
+                    1, 1
+                );
+            }
         }
     }
 
@@ -124,21 +124,22 @@ export class Game extends Scene {
             const pixelY = OFFSET_Y + segment.y * GRID_SIZE;
 
             if (index === 0) {
-                this.snakeGraphics.fillStyle(0x50fa7b, 1);
-                this.snakeGraphics.fillRoundedRect(pixelX + 1, pixelY + 1, GRID_SIZE - 2, GRID_SIZE - 2, 4);
+                // Head — bright neon green, sharp pixel block
+                this.snakeGraphics.fillStyle(0x00ff00, 1);
+                this.snakeGraphics.fillRect(pixelX + 1, pixelY + 1, GRID_SIZE - 2, GRID_SIZE - 2);
                 this.drawEyes(pixelX, pixelY);
             } else {
-                const alpha = 1 - (index / this.snake.length) * 0.4;
-                const green = Math.floor(0x50 + (0xfa - 0x50) * (1 - index / this.snake.length));
-                const color = (green << 8) | 0x7b;
-                this.snakeGraphics.fillStyle(color, alpha);
-                this.snakeGraphics.fillRoundedRect(pixelX + 2, pixelY + 2, GRID_SIZE - 4, GRID_SIZE - 4, 3);
+                // Body — gradually dimmer green, sharp blocks with 1px gap
+                const brightness = 1 - (index / this.snake.length) * 0.5;
+                const green = Math.floor(0xff * brightness);
+                const color = (green << 8);
+                this.snakeGraphics.fillStyle(color, 1);
+                this.snakeGraphics.fillRect(pixelX + 1, pixelY + 1, GRID_SIZE - 2, GRID_SIZE - 2);
             }
         });
     }
 
     private drawEyes(headX: number, headY: number): void {
-        this.snakeGraphics.fillStyle(0xffffff, 1);
         const centerX = headX + GRID_SIZE / 2;
         const centerY = headY + GRID_SIZE / 2;
 
@@ -158,12 +159,14 @@ export class Game extends Scene {
             eye2X = centerX + 4; eye2Y = centerY + 3;
         }
 
-        this.snakeGraphics.fillCircle(eye1X, eye1Y, 2.5);
-        this.snakeGraphics.fillCircle(eye2X, eye2Y, 2.5);
+        // Sharp pixel-style eyes — white squares with dark pupils
+        this.snakeGraphics.fillStyle(0xffffff, 1);
+        this.snakeGraphics.fillRect(eye1X - 2, eye1Y - 2, 4, 4);
+        this.snakeGraphics.fillRect(eye2X - 2, eye2Y - 2, 4, 4);
 
-        this.snakeGraphics.fillStyle(0x282a36, 1);
-        this.snakeGraphics.fillCircle(eye1X, eye1Y, 1.2);
-        this.snakeGraphics.fillCircle(eye2X, eye2Y, 1.2);
+        this.snakeGraphics.fillStyle(0x000000, 1);
+        this.snakeGraphics.fillRect(eye1X - 1, eye1Y - 1, 2, 2);
+        this.snakeGraphics.fillRect(eye2X - 1, eye2Y - 1, 2, 2);
     }
 
     private spawnFood(): void {
@@ -191,36 +194,48 @@ export class Game extends Scene {
             this.foodGraphics.setDepth(2);
         }
 
-        const pixelX = OFFSET_X + this.food.x * GRID_SIZE + GRID_SIZE / 2;
-        const pixelY = OFFSET_Y + this.food.y * GRID_SIZE + GRID_SIZE / 2;
+        const pixelX = OFFSET_X + this.food.x * GRID_SIZE;
+        const pixelY = OFFSET_Y + this.food.y * GRID_SIZE;
 
-        this.foodGraphics.fillStyle(0xff5555, 0.3);
-        this.foodGraphics.fillCircle(pixelX, pixelY, GRID_SIZE / 2);
+        // Outer glow
+        this.foodGraphics.fillStyle(0xff0055, 0.25);
+        this.foodGraphics.fillRect(pixelX - 1, pixelY - 1, GRID_SIZE + 2, GRID_SIZE + 2);
 
-        this.foodGraphics.fillStyle(0xff5555, 1);
-        this.foodGraphics.fillCircle(pixelX, pixelY, GRID_SIZE / 2 - 3);
+        // Solid food block
+        this.foodGraphics.fillStyle(0xff0055, 1);
+        this.foodGraphics.fillRect(pixelX + 2, pixelY + 2, GRID_SIZE - 4, GRID_SIZE - 4);
 
-        this.foodGraphics.fillStyle(0xff7979, 1);
-        this.foodGraphics.fillCircle(pixelX - 2, pixelY - 2, 3);
+        // Highlight pixel
+        this.foodGraphics.fillStyle(0xff6699, 1);
+        this.foodGraphics.fillRect(pixelX + 3, pixelY + 3, 3, 3);
     }
 
     private createUI(): void {
-        this.scoreText = this.add.text(OFFSET_X, 10, `Score: ${this.score}`, {
-            fontSize: '48px',
+        // Score bar separator line
+        const barGfx = this.add.graphics();
+        barGfx.lineStyle(1, 0x00ff00, 0.3);
+        barGfx.lineBetween(OFFSET_X, OFFSET_Y - 5, OFFSET_X + GRID_WIDTH * GRID_SIZE, OFFSET_Y - 5);
+
+        this.scoreText = this.add.text(OFFSET_X, 16, `SCORE  ${this.formatScore(this.score)}`, {
+            fontSize: '56px',
             fontFamily: 'Pixeltype',
-            color: '#f8f8f2'
+            color: '#ffffff'
         });
 
         this.add.text(
             OFFSET_X + GRID_WIDTH * GRID_SIZE,
-            10,
-            `Best: ${this.highScore}`,
+            16,
+            `HI  ${this.formatScore(this.highScore)}`,
             {
-                fontSize: '48px',
+                fontSize: '56px',
                 fontFamily: 'Pixeltype',
-                color: '#ffb86c'
+                color: '#ffff00'
             }
         ).setOrigin(1, 0);
+    }
+
+    private formatScore(value: number): string {
+        return value.toString().padStart(5, '0');
     }
 
     private setupInput(): void {
@@ -248,10 +263,10 @@ export class Game extends Scene {
             this.scene.resume();
             if (this.pauseText) this.pauseText.destroy();
         } else {
-            this.pauseText = this.add.text(320, 240, 'PAUSED', {
+            this.pauseText = this.add.text(512, 384, '- PAUSED -', {
                 fontSize: '96px',
                 fontFamily: 'Pixeltype',
-                color: '#f1fa8c',
+                color: '#ffff00',
                 fontStyle: 'bold'
             }).setOrigin(0.5).setDepth(100);
             this.scene.pause();
@@ -324,7 +339,7 @@ export class Game extends Scene {
     private eatFood(): void {
         this.sfx.eat();
         this.score += 10;
-        this.scoreText.setText(`Score: ${this.score}`);
+        this.scoreText.setText(`SCORE  ${this.formatScore(this.score)}`);
 
         this.speed = Math.max(MIN_SPEED, this.speed - SPEED_DECREASE);
 
@@ -352,8 +367,8 @@ export class Game extends Scene {
         this.snake.forEach((segment) => {
             const pixelX = OFFSET_X + segment.x * GRID_SIZE;
             const pixelY = OFFSET_Y + segment.y * GRID_SIZE;
-            this.snakeGraphics.fillStyle(0xff5555, 1);
-            this.snakeGraphics.fillRoundedRect(pixelX + 1, pixelY + 1, GRID_SIZE - 2, GRID_SIZE - 2, 3);
+            this.snakeGraphics.fillStyle(0xff0000, 1);
+            this.snakeGraphics.fillRect(pixelX + 1, pixelY + 1, GRID_SIZE - 2, GRID_SIZE - 2);
         });
 
         this.time.delayedCall(800, () => {
