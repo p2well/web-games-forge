@@ -1,23 +1,42 @@
+import { Scene } from 'phaser';
+
+interface NoteEntry {
+    note: string | null;
+    dur: number;
+}
+
+type WebAudioSound = {
+    context: AudioContext;
+    masterVolumeNode: AudioNode;
+};
+
 /**
  * Procedural chiptune music generator using Phaser's WebAudio context.
  * Generates a retro 8-bit style looping melody for the title screen.
  */
 export class TitleMusic {
-    constructor(scene) {
+    private scene: Scene;
+    private ctx: AudioContext;
+    private masterGain: AudioNode;
+    private playing: boolean;
+    private scheduledUntil: number;
+    private loopInterval: ReturnType<typeof setInterval> | null;
+    private outputGain: GainNode;
+
+    constructor(scene: Scene) {
         this.scene = scene;
-        this.ctx = scene.sound.context;
-        this.masterGain = scene.sound.masterVolumeNode;
+        const sound = scene.sound as unknown as WebAudioSound;
+        this.ctx = sound.context;
+        this.masterGain = sound.masterVolumeNode;
         this.playing = false;
         this.scheduledUntil = 0;
         this.loopInterval = null;
 
-        // Dedicated gain node so we can silence all scheduled notes instantly
         this.outputGain = this.ctx.createGain();
         this.outputGain.connect(this.masterGain);
     }
 
-    // Classic snake-game style melody — simple, catchy, retro
-    get melody() {
+    get melody(): NoteEntry[] {
         return [
             { note: 'E4', dur: 0.15 },
             { note: 'G4', dur: 0.15 },
@@ -40,8 +59,7 @@ export class TitleMusic {
         ];
     }
 
-    // Bass line
-    get bass() {
+    get bass(): NoteEntry[] {
         return [
             { note: 'E2', dur: 0.6 },
             { note: 'A2', dur: 0.6 },
@@ -53,16 +71,16 @@ export class TitleMusic {
         ];
     }
 
-    noteToFreq(note) {
+    private noteToFreq(note: string | null): number {
         if (!note) return 0;
-        const notes = { 'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11 };
+        const notes: Record<string, number> = { 'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11 };
         const name = note[0];
         const octave = parseInt(note[note.length - 1]);
         const semitone = notes[name] + (note.includes('#') ? 1 : 0);
         return 440 * Math.pow(2, (semitone - 9) / 12 + (octave - 4));
     }
 
-    playNote(freq, startTime, duration, type = 'square', volume = 0.12) {
+    private playNote(freq: number, startTime: number, duration: number, type: OscillatorType = 'square', volume = 0.12): void {
         if (!freq || !this.ctx) return;
 
         const osc = this.ctx.createOscillator();
@@ -83,13 +101,12 @@ export class TitleMusic {
         osc.stop(startTime + duration);
     }
 
-    scheduleLoop() {
+    private scheduleLoop(): void {
         if (!this.playing) return;
 
         const now = this.ctx.currentTime;
-        let startTime = Math.max(now, this.scheduledUntil);
+        const startTime = Math.max(now, this.scheduledUntil);
 
-        // Schedule melody
         let melodyTime = startTime;
         for (const { note, dur } of this.melody) {
             if (note) {
@@ -98,7 +115,6 @@ export class TitleMusic {
             melodyTime += dur;
         }
 
-        // Schedule bass
         let bassTime = startTime;
         const totalMelodyDur = this.melody.reduce((sum, n) => sum + n.dur, 0);
         while (bassTime < startTime + totalMelodyDur) {
@@ -114,26 +130,24 @@ export class TitleMusic {
         this.scheduledUntil = startTime + totalMelodyDur;
     }
 
-    start() {
+    start(): void {
         if (this.playing) return;
         this.playing = true;
         this.scheduledUntil = this.ctx.currentTime;
 
         this.scheduleLoop();
-        // Re-schedule ahead of time to avoid gaps
         const loopDuration = this.melody.reduce((sum, n) => sum + n.dur, 0) * 1000;
         this.loopInterval = setInterval(() => {
             if (this.playing) this.scheduleLoop();
         }, loopDuration - 200);
     }
 
-    stop() {
+    stop(): void {
         this.playing = false;
         if (this.loopInterval) {
             clearInterval(this.loopInterval);
             this.loopInterval = null;
         }
-        // Immediately silence all pre-scheduled notes
         this.outputGain.gain.setValueAtTime(0, this.ctx.currentTime);
         this.outputGain.disconnect();
     }
