@@ -41,6 +41,39 @@ Always create new games by copying the `_game-template/` directory:
 - **Split Vite configs**: `vite/config.dev.mjs` for development, `vite/config.prod.mjs` for production with terser + Phaser chunk splitting
 - **Static assets**: Place in `public/assets/` — served directly at runtime, copied to `dist/assets` on build
 
+## Publishing a Game to `web-games`
+
+When a game is finished, promote it to the
+[`web-games`](https://github.com/p2well/web-games) portfolio repo. That repo
+publishes every finished game to GitHub Pages at
+`https://p2well.github.io/web-games/<game>/` via a GitHub Actions workflow.
+The forge stays the development lab; the publishing pipeline (deploy workflow,
+landing gallery, per-game subfolders) lives in `web-games`, not here.
+
+Perform these steps **in the `web-games` repo, on a feature branch**:
+
+1. **Make the game path-portable** so it works under a `/web-games/<game>/`
+   subpath:
+   - `vite/config.prod.mjs` must use `base: './'` (relative paths). The
+     `_game-template/` already does this.
+   - Every asset URL in `public/style.css` must be **relative** — e.g.
+     `url('./assets/pixeltype.ttf')`, never `url('/assets/pixeltype.ttf')`.
+     Absolute (`/assets/...`) paths 404 on a Pages project subpath.
+2. **Copy the game** — copy the game's self-contained directory from the forge
+   into `web-games/<game>/`, **excluding** `node_modules/` and `dist/`.
+3. **Add a gallery card** — add an `<a class="card" href="./<game>/">…</a>`
+   entry to `web-games/index.html`.
+4. **Add Dependabot coverage** — add an `npm` entry for `/<game>` to
+   `web-games/.github/dependabot.yml` (Dependabot scans one manifest directory
+   per entry).
+5. **Verify** inside `web-games/<game>/`:
+   - `npm install`
+   - `npx tsc --noEmit` — must pass with zero errors
+   - `npm run build` — must succeed; confirm the built `dist/style.css` asset
+     URLs are relative
+6. **Open a PR** targeting `web-games`'s `main`. On merge, the deploy workflow
+   builds every game folder and publishes the updated site.
+
 ## Technology Stack
 
 - **Phaser 4** (`^4.1.0`) — game framework
