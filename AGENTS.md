@@ -1,6 +1,24 @@
 # AGENTS.md
 
-Instructions for AI agents working on this repository.
+Instructions for AI agents working on this repository. This is the single
+source of truth for repository conventions and workflows.
+
+## Project Overview
+
+This is a collection of experimental 2D web games built with **Phaser 4** (the
+latest major version, released April 2026), using Phaser's scene-based
+architecture with WebGL rendering. Each game is self-contained in its own
+directory. Licensed MIT.
+
+## Phaser 4 Key Concepts
+
+- Games are structured as **Scenes** with a lifecycle: `init → preload → create → update`
+- Use `this.add` (GameObjectFactory) to create display objects within a scene
+- Use `this.load` (LoaderPlugin) in `preload()` to queue assets
+- Use `this.input` for keyboard/mouse/touch/gamepad handling
+- Phaser 4 uses a **render node** architecture — custom rendering extends `RenderNode` rather than using pipelines (the v3 pattern)
+- Import as ESM: `import Phaser from 'phaser'` (or use the UMD bundle via CDN)
+- See `phaser-research.md` for detailed architecture notes
 
 ## Creating a New Game
 
@@ -76,10 +94,14 @@ Perform these steps **in the `web-games` repo, on a feature branch**:
 
 ## Technology Stack
 
-- **Phaser 4** (`^4.1.0`) — game framework
+- **Phaser 4** (`^4.1.0`) — game framework. WebGL-first rendering (Canvas
+  fallback), node-based renderer
+- **Physics**: Arcade Physics (lightweight) or Matter.js (full-body) via
+  Phaser's built-in integration
 - **Vite** (`^6.3.1`) — bundler
 - **TypeScript** (`~5.7.2`) — strict mode enabled
 - **Terser** — production minification
+- **License**: MIT
 
 ## Coding Conventions
 
